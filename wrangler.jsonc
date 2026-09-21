@@ -1,0 +1,17 @@
+{
+  "$schema": "https://unpkg.com/wrangler/config-schema.json",
+  "name": "veyro-wtf",
+  // Jeremy Meyer's personal Cloudflare account -- the one that owns the zone.
+  "account_id": "192f944b9d34b749eeb20e0cb9a221f9",
+  "compatibility_date": "2026-09-15",
+  // Static site, no framework: the pages are hand-written HTML, so there is
+  // no build step and no script to cold-start.
+  "assets": {
+    "directory": "./site",
+    "not_found_handling": "404-page"
+  },
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "veyro.wtf", "custom_domain": true }
+  ]
+}
