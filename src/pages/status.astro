@@ -1,0 +1,97 @@
+---
+// status.veyro.wtf. The checks run in the browser against the bot's own
+// endpoints, so this page has no server of its own and cannot go down with
+// the thing it reports on.
+import Base from '../layouts/Base.astro';
+
+// Rendered shell only. The real list comes from the bot's /api/health,
+// which probes Supabase, the Solana RPC and feed liveness. If that cannot be
+// reached we fall back to an opaque reachability probe and say so, rather
+// than showing green for something we did not actually verify.
+const FALLBACK = [
+  { key: 'supabase', label: 'Database',   detail: 'Supabase' },
+  { key: 'rpc',      label: 'Solana RPC', detail: 'Chain reads' },
+  { key: 'feed',     label: 'Launch feed',detail: 'Worker recording new mints' },
+];
+---
+<Base title="Veyro — status" description="Live reachability of the Veyro bot and its endpoints." noindex>
+  <div class="wrap navwrap"><nav class="nav">
+    <a class="logo" href="https://veyro.wtf"><img src="/logo.png" alt="Veyro" width="378" height="120" /></a>
+    <div class="nav-side"><a class="lnk" href="https://veyro.wtf">Back to veyro.wtf</a></div>
+  </nav></div>
+
+  <div class="wrap" style="max-width:860px">
+    <header class="status-head">
+      <h1>System status</h1>
+      <p class="status-lede"><span class="beacon wait" id="beacon"></span><span id="summary">Running checks…</span></p>
+    </header>
+
+    <div class="checks" id="checks">
+      {FALLBACK.map((c) => (
+        <div class="check" data-key={c.key} data-state="wait">
+          <div>
+            <h2>{c.label}</h2>
+            <p>{c.detail}</p>
+            <code class="note"></code>
+          </div>
+          <span class="check-state"><span class="beacon wait"></span><span class="txt">Checking</span></span>
+        </div>
+      ))}
+    </div>
+
+    <footer class="status-foot">
+      <p class="warn" id="caveat">Each check is a live probe of that dependency, run by the bot
+        and read from your browser.</p>
+      <p id="stamp"></p>
+    </footer>
+  </div>
+
+  <script>
+    const ORIGIN = 'https://veyro-live-production-9ac9.up.railway.app';
+    const rows = new Map([...document.querySelectorAll('.check')].map((el) => [el.dataset.key, el]));
+    const beacon = document.getElementById('beacon');
+    const summary = document.getElementById('summary');
+    const caveat = document.getElementById('caveat');
+
+    function mark(el, state, text, note) {
+      el.dataset.state = state;
+      el.querySelector('.check-state .beacon').className = 'beacon ' + state;
+      el.querySelector('.check-state .txt').textContent = text;
+      el.querySelector('.note').textContent = note ?? '';
+    }
+
+    async function run() {
+      try {
+        const res = await fetch(ORIGIN + '/api/health', { cache: 'no-store' });
+        // 503 is a real answer here -- it means a dependency is down, not
+        // that the check failed, so the body is still the truth.
+        const health = await res.json();
+        let up = 0;
+        for (const c of health.checks) {
+          const el = rows.get(c.name);
+          if (!el) continue;
+          mark(el, c.ok ? 'up' : 'down', c.ok ? 'Operational' : 'Failing',
+               [c.detail, c.ms + 'ms'].filter(Boolean).join(' · '));
+          if (c.ok) up++;
+        }
+        const all = up === health.checks.length;
+        beacon.className = 'beacon ' + (all ? 'up' : 'down');
+        summary.textContent = all
+          ? 'All systems operational.'
+          : `${health.checks.length - up} of ${health.checks.length} systems degraded.`;
+        caveat.textContent = 'Each check is a live probe of that dependency, run by the bot and read from your browser.';
+        document.getElementById('stamp').textContent =
+          'Checked ' + new Date(health.at).toLocaleTimeString() + ' · rechecks every 60s';
+      } catch {
+        // Health unreachable. Say only what we can still prove.
+        for (const el of rows.values()) mark(el, 'down', 'Unknown', 'health endpoint unreachable');
+        beacon.className = 'beacon down';
+        summary.textContent = 'Cannot reach the bot.';
+        caveat.textContent = 'The health endpoint did not answer. That can mean the service is down, or that your own network cannot reach it.';
+        document.getElementById('stamp').textContent = 'Checked ' + new Date().toLocaleTimeString();
+      }
+    }
+    run();
+    setInterval(run, 60000);
+  </script>
+</Base>

@@ -1,0 +1,78 @@
+---
+// The kit. Every token and component on one page so a change can be seen
+// before it ships. Not indexed -- it is a workbench, not a page.
+import Base from '../layouts/Base.astro';
+
+const surface = ['--base','--nav','--band','--card-a','--card-b','--rule'];
+const brand   = ['--mag','--mag-2','--cta-a','--cta-b','--pink','--violet'];
+const accent  = ['--blue','--green','--rose'];
+const text    = ['--ink','--body','--dim'];
+---
+<Base title="Veyro — UI kit" description="Design tokens and components." noindex>
+  <div class="wrap" style="padding-block:40px 80px">
+    <header class="sechead" style="text-align:left;padding-block:0 28px">
+      <h2>Veyro UI kit</h2>
+      <p>Tokens and components, straight from <code>src/styles</code>. DESIGN.md says where each value came from.</p>
+    </header>
+
+    {[['Surface',surface],['Brand',brand],['Accent',accent],['Text',text]].map(([label,vars]) => (
+      <section style="margin-bottom:26px">
+        <p class="eyebrow" style="margin-bottom:10px">{label}</p>
+        <div style="display:flex;flex-wrap:wrap;gap:10px">
+          {(vars as string[]).map((v) => (
+            <div style="min-width:132px">
+              <div style={`height:52px;border-radius:9px;border:1px solid var(--rule);background:var(${v})`}></div>
+              <code style="font-size:11.5px;color:var(--dim)">{v}</code>
+            </div>
+          ))}
+        </div>
+      </section>
+    ))}
+
+    <section style="margin-bottom:26px">
+      <p class="eyebrow" style="margin-bottom:10px">Gradients</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px">
+        {['--grad','--grad-lit','--cta-grad'].map((v) => (
+          <div style="min-width:220px">
+            <div style={`height:52px;border-radius:9px;background:var(${v})`}></div>
+            <code style="font-size:11.5px;color:var(--dim)">{v}</code>
+          </div>
+        ))}
+      </div>
+      <p style="font-size:13px;color:var(--dim);margin-top:8px;max-width:64ch">
+        <code>--grad</code> is the ramp the mockup contains. <code>--grad-lit</code> is the same
+        ramp lifted for type over photography, where <code>#952EB8</code> reads as near-black.
+      </p>
+    </section>
+
+    <section style="margin-bottom:26px">
+      <p class="eyebrow" style="margin-bottom:10px">Buttons</p>
+      <div style="display:flex;flex-wrap:wrap;gap:14px;align-items:center">
+        <a class="cta" href="#">Open the bot</a>
+        <a class="cta-big" href="#"><svg class="ico"><use href="#i-tg"/></svg>Open the bot<span class="arw">→</span></a>
+        <a class="ghost" href="#"><svg class="ico"><use href="#i-gh"/></svg>View on GitHub</a>
+      </div>
+    </section>
+
+    <section style="margin-bottom:26px">
+      <p class="eyebrow" style="margin-bottom:10px">Feature cards</p>
+      <div class="cards">
+        <article class="feat"><svg class="ico ic"><use href="#i-rocket"/></svg>
+          <div><h3>Scans launches</h3><p>Find new meme coins the moment they go live.</p></div></article>
+        <article class="feat b"><svg class="ico ic"><use href="#i-x"/></svg>
+          <div><h3>Watches X</h3><p>Tracks sentiment, narratives and trending tokens.</p></div></article>
+        <article class="feat g"><svg class="ico ic"><use href="#i-wallet"/></svg>
+          <div><h3>Follows wallets</h3><p>Monitors smart money and top performing wallets.</p></div></article>
+        <article class="feat r"><svg class="ico ic"><use href="#i-bell"/></svg>
+          <div><h3>Sends alerts</h3><p>Get instant Telegram alerts for high-potential plays.</p></div></article>
+      </div>
+    </section>
+
+    <section>
+      <p class="eyebrow" style="margin-bottom:10px">Type scale</p>
+      <h1 style="font-size:clamp(2.1rem,5.1vw,3.65rem)">From doomer<em>to alpha zoomer.</em></h1>
+      <p class="lead">Lead. Veyro scans meme coin launches, watches social sentiment, and tracks smart wallets.</p>
+      <p class="eyebrow">Eyebrow &nbsp;·&nbsp; 0.3em tracking</p>
+    </section>
+  </div>
+</Base>
