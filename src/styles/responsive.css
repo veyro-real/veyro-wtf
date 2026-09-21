@@ -1,0 +1,92 @@
+/* The phone layout. Separate because it is a different composition, not a
+   squeeze of the desktop one -- see DESIGN.md section 5. */
+
+.m-only{display:none}
+@media(max-width:899px){
+  .d-only{display:none}
+  .m-only{display:block}
+  /* Screen one is composed, not stacked: the script sits at the top of the
+     frame, everything else falls down the left, and the slack is shared
+     between them rather than dumped in one gap. */
+  .hero{align-items:stretch}
+  .hero-in{padding-block:clamp(88px,15.5vh,116px) clamp(40px,7vh,62px);
+           width:100%;display:flex}
+  .hero-copy{display:flex;flex-direction:column;flex:1;max-width:560px;
+             padding:0;margin-left:0;border:0;background:none;box-shadow:none;
+             -webkit-backdrop-filter:none;backdrop-filter:none;border-radius:0}
+  /* Copy reads down from the top, the button and the Telegram line hold the
+     bottom, and the plate gets the space between them. */
+  .m-only{margin-bottom:auto}
+
+  .ladder{list-style:none;margin:0;padding:0}
+  .ladder li{font-size:clamp(13px,3.8vw,19px);font-weight:500;letter-spacing:.18em;
+             text-transform:uppercase;color:#CFC7DC;line-height:1.5}
+  .m-tag{font-size:clamp(14.5px,4.2vw,22px);font-weight:800;letter-spacing:.045em;
+         text-transform:uppercase;line-height:1.36;margin:19px 0 0;padding-top:18px;
+         display:inline-block;position:relative}
+  /* A short rule, not a full-width border: it stops well short, as in the
+     mockup, so it reads as a mark rather than a divider. */
+  .m-tag::before{content:'';position:absolute;top:0;left:0;width:38px;height:2px;
+                 background:var(--mag-2)}
+
+  /* The mockup's button hugs its label. Full-bleed would read as a form. */
+  .cta-big{align-self:stretch;justify-content:center;width:100%;
+           margin-top:clamp(20px,4vh,32px);padding:clamp(17px,2.2vw,22px) 22px;
+           font-size:clamp(15.5px,4.4vw,19px);gap:14px;
+           box-shadow:0 0 46px rgba(199,36,240,.62),0 0 14px rgba(255,139,245,.5)}
+  .tg{justify-content:center;flex-wrap:wrap;row-gap:0;text-align:center;
+      margin:21px auto 0;font-size:clamp(14px,4vw,17px);max-width:17em;color:#EFE9F7}
+
+  /* The panel belongs to screen two on a phone. */
+  .ba.m-only{margin:0 0 4px;max-width:none}
+
+  /* Two by two, per the phone mockup: the icon sits above left-aligned text
+     and the type stays at a readable size rather than shrinking to fit four. */
+  .cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding-block:0 22px}
+  .feat{flex-direction:column;align-items:flex-start;text-align:left;padding:16px 15px;gap:10px}
+  .feat .ic{font-size:30px;margin:0}
+  .feat h3{font-size:16px;line-height:1.2}
+  .feat p{font-size:13px;line-height:1.38}
+
+  /* Name over percentage, which is how the mockup stacks them. Nothing here
+     has to be squeezed to fit any more -- the row travels. */
+  .strip-in{min-height:0;padding-block:11px;padding-inline:12px;gap:10px}
+  .tok{flex-direction:column;align-items:flex-start;gap:0;line-height:1.2;
+       padding-left:24px;position:relative;min-height:28px;justify-content:center}
+  .tok .av{position:absolute;left:0;top:50%;transform:translateY(-50%);
+           width:20px;height:20px;font-size:9.5px}
+  .tok .nm{font-size:11.5px}
+  .tok .pc{font-size:10.5px}
+  .strip-t{font-size:10.5px;gap:4px;letter-spacing:.02em}
+  .ticker-track{gap:16px}
+  .moon{display:none}
+
+  .ghosts{flex-direction:column}
+  .ghost{width:100%;justify-content:center}
+}
+@media(max-width:899px) and (max-height:540px){
+  .m-graf{display:none}
+  .hero-in{padding-block:76px 30px}
+}
+/* A tablet has the width for all four cards in a row; a phone does not. */
+@media(min-width:640px) and (max-width:899px){
+  .cards{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+/* Which plate is in use is decided by <source media> on the <picture>: the
+   portrait one only while the frame is taller than 9:16, the wide one past
+   that. One image at a time -- layering two crops of the same file over each
+   other repeats the picture. This rule only frames the wide plate when it
+   takes over inside the phone layout. */
+@media(max-width:899px) and (min-aspect-ratio:9/16){
+  .hero-art img{object-position:70% center}
+}
+@media(min-width:480px) and (max-width:899px){
+  .hero-in{padding-block:clamp(72px,9vh,98px) clamp(30px,4.4vh,48px)}
+  .m-script{font-size:clamp(38px,6.6vw,48px)}
+  .m-graf{top:clamp(76px,9vh,98px)}
+}
+@media(max-width:359px){
+  .cards{grid-template-columns:1fr}
+}
+
+@media(prefers-reduced-motion:reduce){*{transition-duration:1ms!important}}

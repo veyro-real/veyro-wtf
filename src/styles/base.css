@@ -1,0 +1,15 @@
+/* Reset, element defaults and the page container. Nothing here knows about
+   any particular section of the page. */
+@import './tokens.css';
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+
+html{-webkit-text-size-adjust:100%;overflow-x:clip}
+body{background:var(--base);color:var(--ink);font-family:var(--sans);line-height:1.5;
+     overflow-x:clip;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img,svg{display:block;max-width:100%}
+:focus-visible{outline:2px solid var(--pink);outline-offset:3px;border-radius:4px}
+.wrap{width:100%;max-width:1400px;margin-inline:auto;padding-inline:var(--pad)}
+.ico{width:1em;height:1em;flex:none;fill:currentColor}

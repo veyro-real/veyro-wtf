@@ -1,0 +1,72 @@
+---
+// status.veyro.wtf. Checks run in the browser against the bot's own
+// endpoints, so this page has no server and cannot itself go down with the
+// thing it is reporting on.
+import Base from '../layouts/Base.astro';
+
+const CHECKS = [
+  { id: 'app',     label: 'Bot app',        detail: 'Next app on Railway',        path: '/' },
+  { id: 'webhook', label: 'Telegram intake',detail: 'Rejects unsigned calls',     path: '/api/telegram/webhook', method: 'POST', expect: 401 },
+  { id: 'state',   label: 'State API',      detail: 'Reads from Supabase',        path: '/api/state' },
+];
+---
+<Base title="Veyro — status" description="Live status of the Veyro bot and its dependencies." noindex>
+  <div class="wrap navwrap"><nav class="nav">
+    <a class="logo" href="https://veyro.wtf"><img src="/logo.png" alt="Veyro" width="378" height="120" /></a>
+  </nav></div>
+
+  <div class="wrap" style="padding-block:40px 80px;max-width:820px">
+    <header class="sechead" style="text-align:left;padding-block:0 22px">
+      <h2>System status</h2>
+      <p id="summary">Checking…</p>
+    </header>
+
+    <div id="checks" style="display:grid;gap:10px">
+      {CHECKS.map((c) => (
+        <div class="feat" data-check={c.id} data-path={c.path} data-method={c.method ?? 'GET'}
+             data-expect={String(c.expect ?? 200)}
+             style="flex-direction:row;align-items:center;justify-content:space-between;gap:16px">
+          <div>
+            <h3 style="color:var(--ink)">{c.label}</h3>
+            <p>{c.detail}</p>
+          </div>
+          <b class="dot" style="font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--dim);white-space:nowrap">Checking…</b>
+        </div>
+      ))}
+    </div>
+
+    <footer style="margin-top:28px">
+      <p class="warn">These checks run from your browser against the live service. A failure here
+        can mean the service is down or that your own network cannot reach it.</p>
+      <p id="stamp" style="color:var(--dim);font-size:12.5px"></p>
+    </footer>
+  </div>
+
+  <script>
+    const ORIGIN = 'https://veyro-live-production-9ac9.up.railway.app';
+    const rows = [...document.querySelectorAll('[data-check]')];
+    const set = (el, ok, text) => {
+      const b = el.querySelector('.dot');
+      b.textContent = text;
+      b.style.color = ok === null ? 'var(--dim)' : ok ? '#17C063' : '#FF5C7A';
+    };
+    async function run() {
+      let up = 0;
+      await Promise.all(rows.map(async (el) => {
+        const want = Number(el.dataset.expect);
+        try {
+          // no-cors gives an opaque response: it proves the host answered,
+          // which is all a reachability check can honestly claim here.
+          await fetch(ORIGIN + el.dataset.path, { method: el.dataset.method, mode: 'no-cors', cache: 'no-store' });
+          set(el, true, 'Reachable'); up++;
+        } catch {
+          set(el, false, 'Unreachable');
+        }
+      }));
+      document.getElementById('summary').textContent =
+        up === rows.length ? 'All systems reachable.' : `${up} of ${rows.length} reachable.`;
+      document.getElementById('stamp').textContent = 'Last checked ' + new Date().toLocaleString();
+    }
+    run(); setInterval(run, 60000);
+  </script>
+</Base>

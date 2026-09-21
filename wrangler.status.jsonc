@@ -1,0 +1,18 @@
+{
+  "$schema": "https://unpkg.com/wrangler/config-schema.json",
+  "name": "veyro-status",
+  "account_id": "192f944b9d34b749eeb20e0cb9a221f9",
+  "compatibility_date": "2026-09-15",
+  // A second Worker off the same build. Its asset root is the status page's
+  // own directory, so /status/index.html becomes the root of the subdomain.
+  // An assets-only Worker cannot route by hostname, which is why this is a
+  // separate Worker rather than a rule on the main one.
+  "assets": {
+    "directory": "./dist/status",
+    "not_found_handling": "404-page"
+  },
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "status.veyro.wtf", "custom_domain": true }
+  ]
+}
