@@ -1,0 +1,77 @@
+---
+// /pricing. One offer, stated plainly, with the costs Veyro does not charge
+// spelled out beside it. "Free" has to mean something precise on a page
+// where someone decides to hand over a wallet.
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+const LATER = [
+  { name: 'Free',  slots: '1 active token',    body: 'Enough to run the bot and see how it behaves before you scale up.' },
+  { name: 'Paid',  slots: '3 active tokens',   body: 'What every alpha user gets today, at no cost.' },
+  { name: 'Pro',   slots: '15 active tokens',  body: 'Run a portfolio of campaigns at once.' },
+];
+---
+<Base
+  title="Veyro — pricing"
+  description="Free while Veyro is in alpha. Three active tokens, no card, no Veyro fee. Connect a phone number and an email and you are in."
+>
+  <Nav />
+
+  <div class="wrap">
+    <header class="price-head">
+      <span class="badge-alpha">Alpha · open now</span>
+      <h1>Free while<em>we're in alpha.</em></h1>
+      <p>No card. No trial clock. Three tokens running at once, the same engine
+        everyone else gets later.</p>
+    </header>
+
+    <section class="plan">
+      <p class="plan-price"><b>$0</b><span>for the whole alpha</span></p>
+      <p>We want people trading on it and telling us where it breaks. That is
+        worth more to us right now than your money.</p>
+      <ul>
+        <li><span><strong>3 active tokens</strong> at once — three times what the free tier will be later</span></li>
+        <li><span>Every command: scan, buy, sell, limits, positions</span></li>
+        <li><span>Voice notes in and out, with confirmation before anything executes</span></li>
+        <li><span>Spending limits you set, enforced before a trade is placed</span></li>
+        <li class="none"><span>No card, and nothing to cancel</span></li>
+      </ul>
+      <a class="cta-big" href="https://t.me/theveyrobotbot">
+        <svg class="ico"><use href="#i-tg"/></svg>Start on Telegram<span class="arw">→</span></a>
+      <p class="plan-note">A phone number and an email are all you need to sign up.</p>
+    </section>
+
+    <section class="costs">
+      <h2>What "free" actually means</h2>
+      <p><strong>Veyro takes nothing.</strong> No subscription, no commission, no
+        cut of a winning trade. What you do still pay is what Solana and the
+        launchpad charge to move the money — those go to the network, not to us,
+        and you would pay them trading by hand.</p>
+      <dl>
+        <div><dt>Veyro fee</dt><dd>none</dd></div>
+        <div><dt>Solana network + priority fee</dt><dd>paid to the network</dd></div>
+        <div><dt>Launchpad and pool fees</dt><dd>set by the venue</dd></div>
+        <div><dt>Slippage</dt><dd>capped by your settings</dd></div>
+      </dl>
+    </section>
+
+    <header class="sechead" style="padding-block:clamp(40px,5vw,64px) 0">
+      <h2>After the alpha</h2>
+      <p>Tiers are set by how many tokens you can run at once. Prices are not decided yet.</p>
+    </header>
+
+    <section class="later">
+      {LATER.map((t) => (
+        <article>
+          <h3>{t.name}</h3>
+          <p class="slots">{t.slots}</p>
+          <p>{t.body}</p>
+          <p class="tbd">Price to be announced.</p>
+        </article>
+      ))}
+    </section>
+  </div>
+
+  <Footer />
+</Base>

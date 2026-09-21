@@ -1,9 +1,18 @@
-<div class="wrap navwrap">
+---
+interface Props {
+  /** Float the bar over a full-bleed hero. Only the home page has one;
+   *  everywhere else the bar must take up space or the content slides
+   *  underneath it on a phone. */
+  overlay?: boolean;
+}
+const { overlay = false } = Astro.props;
+---
+<div class={`wrap navwrap${overlay ? ' navwrap-over' : ''}`}>
   <nav class="nav">
     <a class="logo" href="/"><img src="/logo.png" alt="Veyro" width="378" height="120"></a>
     <div class="nav-links">
-      <a href="#features">How it works</a><a href="#trending">Trending</a>
-      <a href="#community">Community</a>
+      <a href="/#features">How it works</a><a href="/#trending">Trending</a>
+      <a href="/#community">Community</a><a href="/pricing">Pricing</a>
     </div>
     <button class="burger" aria-label="Menu" aria-expanded="false">
       <span></span><span></span><span></span>
