@@ -289,3 +289,5 @@ footer .warn{color:#FFB25E;max-width:74ch;line-height:1.6}
 @media(max-width:560px){
   .check{flex-direction:column;align-items:flex-start;gap:10px}
 }
+
+.check .note{display:block;margin-top:4px}
