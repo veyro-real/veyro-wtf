@@ -5,12 +5,12 @@
   "packageManager": "pnpm@10.33.4",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && node scripts/pack-status.mjs",
     "preview": "astro preview",
     "check": "astro check",
-    "deploy": "astro build && wrangler deploy",
-    "deploy:status": "astro build && wrangler deploy -c wrangler.status.jsonc",
-    "deploy:all": "astro build && wrangler deploy && wrangler deploy -c wrangler.status.jsonc"
+    "deploy": "npm run build && wrangler deploy",
+    "deploy:status": "npm run build && wrangler deploy -c wrangler.status.jsonc",
+    "deploy:all": "npm run build && wrangler deploy && wrangler deploy -c wrangler.status.jsonc"
   },
   "devDependencies": {
     "astro": "^5.16.2",
